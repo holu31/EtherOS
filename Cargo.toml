@@ -7,7 +7,6 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-uart_16550 = "0.3.0"
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 spin = "0.5.2"
 

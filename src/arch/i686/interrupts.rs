@@ -3,7 +3,7 @@ use crate::arch::registers::Registers;
 use lazy_static::lazy_static;
 use crate::arch::hlt;
 use spin::Mutex;
-use x86::io;
+use crate::io::ports::outb;
 use crate::{log, ok};
 
 lazy_static! {
@@ -17,9 +17,9 @@ lazy_static! {
 #[no_mangle]
 unsafe extern "C" fn irq_handler(regs: Registers) {
     if regs.int_num >= 40 {
-		io::outb(0xA0, 0x20);
+		outb(0xA0, 0x20);
 	}
-    io::outb(0x20, 0x20);
+    outb(0x20, 0x20);
 
     let int_num = regs.int_num as usize;
     if IDT.lock().interrupt_handlers[int_num] != None {
@@ -80,8 +80,8 @@ pub fn interrupts_init() {
     IDT.lock().register_interrupt_handler(0x6, fault_opcode);
     IDT.lock().register_interrupt_handler(0x8, double_fault);
     IDT.lock().register_interrupt_handler(0xB, segment_is_not_available);
-	IDT.lock().register_interrupt_handler(0xC, stack_error);
-	IDT.lock().register_interrupt_handler(0xD, general_protection_error);
-	IDT.lock().register_interrupt_handler(0xE, page_fault);
+    IDT.lock().register_interrupt_handler(0xC, stack_error);
+    IDT.lock().register_interrupt_handler(0xD, general_protection_error);
+    IDT.lock().register_interrupt_handler(0xE, page_fault);
     ok!("Interrupt handers has been initializated!");
 }

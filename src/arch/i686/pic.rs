@@ -1,4 +1,4 @@
-use x86::io;
+use crate::io::ports::{outb, inb, io_wait};
 use lazy_static::lazy_static;
 use spin::Mutex;
 use crate::ok;
@@ -29,15 +29,15 @@ impl Pic {
     }
 
     pub unsafe fn end_of_interrupt(&mut self) {
-        io::outb(self.command.into(), PIC_EOI);
+        outb(self.command.into(), PIC_EOI);
     }
 
     pub unsafe fn read_mask(&mut self) -> u8 {
-        io::inb(self.data.into())
+        inb(self.data.into())
     }
 
     pub unsafe fn write_mask(&mut self, mask: u8) {
-        io::outb(self.data.into(), mask);
+        outb(self.data.into(), mask);
     }
 }
 
@@ -65,29 +65,27 @@ impl Pics {
     }
 
     pub unsafe fn init(&mut self) {
-        io::outb(0x80, 0);
-
         let saved_masks = self.read_masks();
 
-        io::outb(self.pics[0].command.into(), PCI_INIT);
-        io::outb(0x80, 0);
-        io::outb(self.pics[1].command.into(), PCI_INIT);
-        io::outb(0x80, 0);
+        outb(self.pics[0].command.into(), PCI_INIT);
+        io_wait();
+        outb(self.pics[1].command.into(), PCI_INIT);
+        io_wait();
 
-        io::outb(self.pics[0].data.into(), self.pics[0].offset);
-        io::outb(0x80, 0);
-        io::outb(self.pics[1].data.into(), self.pics[1].offset);
-        io::outb(0x80, 0);
+        outb(self.pics[0].data.into(), self.pics[0].offset);
+        io_wait();
+        outb(self.pics[1].data.into(), self.pics[1].offset);
+        io_wait();
 
-        io::outb(self.pics[0].data.into(), 4);
-        io::outb(0x80, 0);
-        io::outb(self.pics[1].data.into(), 2);
-        io::outb(0x80, 0);
+        outb(self.pics[0].data.into(), 4);
+        io_wait();
+        outb(self.pics[1].data.into(), 2);
+        io_wait();
 
-        io::outb(self.pics[0].data.into(), MODE_8086);
-        io::outb(0x80, 0);
-        io::outb(self.pics[1].data.into(), MODE_8086);
-        io::outb(0x80, 0);
+        outb(self.pics[0].data.into(), MODE_8086);
+        io_wait();
+        outb(self.pics[1].data.into(), MODE_8086);
+        io_wait();
         
         self.write_masks(saved_masks[0], saved_masks[1]);
         ok!("PIC8259 has been initializated!");

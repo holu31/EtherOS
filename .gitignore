@@ -1,0 +1,5 @@
+swan-os.iso
+isodir/
+asm/*.o
+target/
+.vscode/

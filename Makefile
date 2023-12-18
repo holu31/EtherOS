@@ -32,10 +32,10 @@ iso: $(KERNEL)
 	grub2-mkrescue isodir/ -o swan-os.iso
 
 run:
-	qemu-system-i386 -m 125M -serial mon:stdio -cdrom swan-os.iso
+	qemu-system-i386 -name "SwanOS" -m 125M -cpu max -serial mon:stdio -cdrom swan-os.iso
 
 debug:
-	qemu-system-i386 -m 125M -serial file:Qemu.log -cdrom swan-os.iso -s -S &
+	qemu-system-i386 -name "SwanOS" -m 125M -cpu max -serial file:Qemu.log -cdrom swan-os.iso -s -S &
 	gdb -ex "target remote localhost:1234"
 
 runiso: iso

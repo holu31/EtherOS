@@ -3,7 +3,7 @@
 .set ALIGN,						1<<0
 .set MEMINFO,					1<<1
 .set VBE_MODE,   				1<<2
-.set FLAGS,						ALIGN | MEMINFO
+.set FLAGS,						ALIGN | MEMINFO | VBE_MODE
 .set MAGIC,						0x1BADB002
 .set CHECKSUM,					-(MAGIC + FLAGS)
 
@@ -14,6 +14,9 @@
 .int MAGIC
 .int FLAGS
 .int CHECKSUM
+.long 0, 0, 0, 0, 0
+.long 0
+.long 1280, 720, 32
 
 .section .bss
 .align 16

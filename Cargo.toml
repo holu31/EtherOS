@@ -9,6 +9,8 @@ edition = "2021"
 [dependencies]
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 spin = "0.5.2"
+raw-cpuid = "11.0.1"
+font8x8 = { version = "0.3.1", default-features = false, features = ["unicode"] }
 
 [profile.release]
 lto = true

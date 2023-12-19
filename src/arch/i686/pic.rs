@@ -8,7 +8,7 @@ pub const PIC_2_OFFSET: u8 = 0xA0;
 
 lazy_static! {
     pub static ref PICS: Mutex<Pics> = {
-        let mut pics = Pics::new(PIC_1_OFFSET, PIC_2_OFFSET);
+        let pics = Pics::new(PIC_1_OFFSET, PIC_2_OFFSET);
         Mutex::new(pics)
     };
 }

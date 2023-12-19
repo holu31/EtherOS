@@ -5,7 +5,7 @@ use crate::{ok, log};
 const PRINT: usize = 0;
 
 fn syscalls_handler(regs: Registers) {
-    log!("Called syscall, eax = {}", regs.eax);
+    log!("Called syscall, EAX = {}", regs.eax);
     match regs.eax as usize {
         PRINT => {
             log!("Result: {}", regs.ebx);

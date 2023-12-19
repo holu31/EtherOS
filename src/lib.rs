@@ -21,6 +21,8 @@ use arch::pic::PICS;
 use sys::syscalls::syscalls_init;
 use framebuffer::Framebuffer;
 
+use crate::framebuffer::russian_flag;
+
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     err!("{}", info);
@@ -35,26 +37,7 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     log!("Multiboot header at {:?}", mboot);
 
     let mut fb = Framebuffer::new(mboot);
-    for x in 0..1280 {
-        for y in 0..720/3 {
-            fb.pixel(x, y, 0xFFFFFF);
-        }
-    }
-
-    for x in 0..1280 {
-        for y in 720/3..720/2+100 {
-            fb.pixel(x, y, 0x0000FF);
-        }
-    }
-
-    for x in 0..1280 {
-        for y in 720/2+100..720 {
-            fb.pixel(x, y, 0xFF0000);
-        }
-    }
-
-    fb.write_str("Hello, Russia!\n");
-    fb.write_str("Russian font is not supported yet!");
+    russian_flag(&mut fb);
 
     gdt_init();
     interrupts_init();

@@ -73,3 +73,26 @@ impl Framebuffer {
 
 
 }
+
+pub fn russian_flag(fb: &mut Framebuffer) {
+    for x in 0..1280 {
+        for y in 0..720/3 {
+            fb.pixel(x, y, 0xFFFFFF);
+        }
+    }
+
+    for x in 0..1280 {
+        for y in 720/3..720/2+100 {
+            fb.pixel(x, y, 0x0000FF);
+        }
+    }
+
+    for x in 0..1280 {
+        for y in 720/2+100..720 {
+            fb.pixel(x, y, 0xFF0000);
+        }
+    }
+
+    fb.write_str("Hello, Russia!\n");
+    fb.write_str("Russian font is not supported yet!");
+}

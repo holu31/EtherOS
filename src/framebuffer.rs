@@ -1,6 +1,6 @@
 use crate::multiboot::MultibootHeader;
-use crate::{log, serial_print};
-use font8x8::{UnicodeFonts, BASIC_UNICODE};
+use font8x8::BASIC_UNICODE;
+use crate::log;
 
 #[derive(Debug)]
 pub struct Framebuffer {

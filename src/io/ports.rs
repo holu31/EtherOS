@@ -9,7 +9,7 @@ pub unsafe fn outb(port: u16, value: u8) {
 
 #[inline]
 pub unsafe fn inb(port: u16) -> u8 {
-    let mut tmp: u8 = 0;
+    let mut tmp: u8;
     unsafe {
         asm!("in al, dx", out("al") tmp, in("dx") port, options(nomem, nostack, preserves_flags));
     }
@@ -26,7 +26,7 @@ pub unsafe fn outw(port: u16, value: u16) {
 
 #[inline]
 pub unsafe fn inw(port: u16) -> u16 {
-    let mut tmp: u16 = 0;
+    let mut tmp: u16;
     unsafe {
         asm!("in ax, dx", out("ax") tmp, in("dx") port, options(nomem, nostack, preserves_flags));
     }
@@ -42,7 +42,7 @@ pub unsafe fn outl(port: u16, value: u32) {
 
 #[inline]
 pub unsafe fn inl(port: u16) -> u32 {
-    let mut tmp: u32 = 0;
+    let mut tmp: u32;
     unsafe {
         asm!("in dx, eax", in("dx") port, out("eax") tmp, options(nomem, nostack, preserves_flags));
     }

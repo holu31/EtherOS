@@ -8,7 +8,7 @@ pub mod io;
 pub mod logger;
 pub mod sys;
 pub mod framebuffer;
-pub mod mem;
+pub mod memory;
 
 #[cfg(target_arch = "x86")]
 #[path="arch/i686/mod.rs"]
@@ -23,6 +23,11 @@ use sys::syscalls::syscalls_init;
 use framebuffer::{russian_flag, Framebuffer};
 use raw_cpuid::CpuId;
 
+extern {
+    pub static _kernel_start: usize;
+    pub static _kernel_end: usize;
+}
+
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     err!("{}", info);
@@ -33,8 +38,11 @@ fn panic(info: &PanicInfo) -> ! {
 pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! {
     let mboot: *const MultibootHeader = multiboot_addr as *const MultibootHeader;
 
-    log!("Swan OS starting...");
+    log!("Ether OS v{} starting...", env!("CARGO_PKG_VERSION"));
     log!("Multiboot header at {:?}", mboot);
+
+    log!("Kernel start {:#x}", _kernel_start);
+    log!("Kernel end {:#x}", _kernel_end);
 
     let cpuid = CpuId::new();
     if let Some(vendor) = cpuid.get_vendor_info() {
@@ -55,9 +63,6 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
         log!("No cache parameter information available");
     }
 
-    let mut fb = Framebuffer::new(mboot);
-    russian_flag(&mut fb);
-
     gdt_init();
     interrupts_init();
     PICS.lock().init();
@@ -65,6 +70,8 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
 
     log!("Test printable syscall");
     asm!("int $0x80", in("eax") (0), in("ebx") (12));
+    
+    memory::init(mboot);
 
     arch::hlt()
 }

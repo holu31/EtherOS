@@ -1,4 +1,4 @@
-ASM = asm/start.o asm/gdt_flush.o asm/idt_load.o asm/irq.o asm/isr.o
+ASM = asm/start.o asm/gdt_flush.o asm/idt_load.o asm/irq.o asm/isr.o asm/paging.o
 
 TARGET = i686
 KERNEL = kernel.elf

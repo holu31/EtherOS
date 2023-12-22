@@ -20,7 +20,6 @@ use core::arch::asm;
 use arch::interrupts::interrupts_init;
 use arch::pic::PICS;
 use sys::syscalls::syscalls_init;
-use framebuffer::{russian_flag, Framebuffer};
 use raw_cpuid::CpuId;
 
 extern {
@@ -74,6 +73,4 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     memory::init(mboot);
 
     arch::hlt();
-    
-    loop {}
 }

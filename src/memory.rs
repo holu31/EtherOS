@@ -14,11 +14,18 @@ pub unsafe fn init(mboot: *const MultibootHeader) {
     let kernel_size = _kernel_end - _kernel_start;
 
     memory_map.free_availble_memory(mboot);
+
+	memory_map.bitmap[0] = 0xFFFF_FFFF;
+
     let a = memory_map.alloc_page();
+    let b = memory_map.alloc_page();
+
     if a == null_mut() {
         log!("нихуя не вышло!");
     }
+
     log!("Память выделена, адрес: {:?}", a);
+    log!("Память выделена, адрес: {:?}", b);
 }
 
 pub struct MemoryMap<'a> {
@@ -48,9 +55,13 @@ impl<'a> MemoryMap<'a> {
 
         let pages_count = max_memory / 4096;
         let bitmap = slice::from_raw_parts_mut(_kernel_end as *mut u32, pages_count / 8);
+
+        // log!("Bitmap at: {:?}", bitmap);
+
         unsafe {
-            bitmap.fill(0xFFFFFFFF)
+            bitmap.fill(0xFFFF_FFFF)
         };
+
         log!("Total pages count: {}", pages_count);
 
         Self {
@@ -80,6 +91,7 @@ impl<'a> MemoryMap<'a> {
             if self.bitmap[idx] & (1 << bit) != 0 {
                 self.bitmap[idx] &= !(1 << bit);
                 self.used += 1;
+                
                 return (i * 4096) as *mut u8;
             }
         }

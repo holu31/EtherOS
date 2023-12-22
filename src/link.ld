@@ -19,18 +19,19 @@ SECTIONS
         *(.data*)
     }
 
+	_data_end = .;
+
     .rodata ALIGN (0x1000) :
     {
         *(.rodata*)
     }
 
+	_rodata_end = .;
 
-	_data_end = .;
-	
     .bss :
     {
         *(COMMON)
-        *(.bss)
+        *(.bss .bss.*)
     }
 
 	/DISCARD/ : {

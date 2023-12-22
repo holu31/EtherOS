@@ -2,10 +2,10 @@ use core::mem::size_of;
 use core::slice;
 use core::ptr::null_mut;
 
-use spin::Mutex;
+// use spin::Mutex;
 use crate::multiboot::{MultibootHeader, MemoryMapEntry};
 
-use crate::{log, _kernel_end, _kernel_start, note};
+use crate::{log, _kernel_end, _kernel_start};
 
 pub unsafe fn init(mboot: *const MultibootHeader) {
     let mentry = (*mboot).mmap_addr as *mut MemoryMapEntry;
@@ -13,12 +13,23 @@ pub unsafe fn init(mboot: *const MultibootHeader) {
 
     let kernel_size = _kernel_end - _kernel_start;
 
+    log!("Kernel size is: {} bytes", kernel_size);
+
     memory_map.free_availble_memory(mboot);
+
+	memory_map.bitmap[0] = 0xFFFF_FFFF;
+
     let a = memory_map.alloc_page();
+    let b = memory_map.alloc_page();
+    let c = memory_map.alloc_page();
+
     if a == null_mut() {
         log!("нихуя не вышло!");
     }
+
     log!("Память выделена, адрес: {:?}", a);
+    log!("Память выделена, адрес: {:?}", b);
+    log!("Память выделена, адрес: {:?}", c);
 }
 
 pub struct MemoryMap<'a> {
@@ -48,9 +59,9 @@ impl<'a> MemoryMap<'a> {
 
         let pages_count = max_memory / 4096;
         let bitmap = slice::from_raw_parts_mut(_kernel_end as *mut u32, pages_count / 8);
-        unsafe {
-            bitmap.fill(0xFFFFFFFF)
-        };
+
+        bitmap.fill(0xFFFF_FFFF);
+
         log!("Total pages count: {}", pages_count);
 
         Self {
@@ -68,8 +79,6 @@ impl<'a> MemoryMap<'a> {
         while (mentry as usize) < (*mboot).mmap_addr as usize + (*mboot).mmap_length as usize {
             mentry = (mentry as usize + (*mentry).size as usize + size_of::<u8>()) as *mut MemoryMapEntry;
         }
-
-        self.bitmap[0 / 32] |= 1 << (0 % 32);
     }
 
     pub fn alloc_page(&mut self) -> *mut u8 {
@@ -80,6 +89,7 @@ impl<'a> MemoryMap<'a> {
             if self.bitmap[idx] & (1 << bit) != 0 {
                 self.bitmap[idx] &= !(1 << bit);
                 self.used += 1;
+                
                 return (i * 4096) as *mut u8;
             }
         }

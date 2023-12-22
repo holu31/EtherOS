@@ -40,7 +40,7 @@ impl InterruptDescriptorTable {
     pub fn set_gate(&mut self, index: usize, base: u32, sel: u16, flags: u8) {
         let idt_entry = IdtEntry {
             base_lo: (base & 0xFFFF) as u16,
-            sel: sel,
+            sel,
             always0: 0,
             flags: flags | 0x60,
             base_hi: (base >> 16) as u16 & 0xFFFF,

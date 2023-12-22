@@ -5,22 +5,33 @@ SECTIONS
     . = 0x00200000;
 
     _kernel_start = .;
-    
-    .text ALIGN (0x1000) :
+
+    .text ALIGN (0x1000) : 
     {
         *(.boot)
-        *(.text)
+        *(.text*)
     }
 
+	_text_end = .;
+	
     .data ALIGN (0x1000) :
     {
-        *(.data)
+        *(.data*)
     }
+
+	_data_end = .;
+
+    .rodata ALIGN (0x1000) :
+    {
+        *(.rodata*)
+    }
+
+	_rodata_end = .;
 
     .bss :
     {
         *(COMMON)
-        *(.bss)
+        *(.bss .bss.*)
     }
 
 	/DISCARD/ : {

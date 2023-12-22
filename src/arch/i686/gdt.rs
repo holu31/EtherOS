@@ -18,7 +18,7 @@ struct GdtEntry {
 impl GdtEntry {
 
     pub const fn new(base: u32, limit: u32, access: u8, gran: u8) -> Self {
-        let gdt_entry = GdtEntry {
+        GdtEntry {
             limit_low: (limit & 0xFFFF) as u16,
             granularity: ((limit >> 16) & 0x0F) as u8 | gran & 0xF0,
 
@@ -26,9 +26,8 @@ impl GdtEntry {
             base_middle: ((base >> 16) & 0xFF) as u8,
             base_high: ((base >> 24) & 0xFF) as u8,
 
-            access: access,
-        };
-        gdt_entry
+            access,
+        }
     }
 
 }

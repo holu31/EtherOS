@@ -29,7 +29,7 @@ iso: $(KERNEL)
 	mv $(KERNEL) isodir/boot/
 	cp grub.cfg isodir/boot/grub
 
-	grub2-mkrescue isodir/ -o swan-os.iso
+	grub-mkrescue isodir/ -o swan-os.iso
 
 run:
 	qemu-system-i386 -name "SwanOS" -m 125M -cpu max -serial mon:stdio -cdrom swan-os.iso
@@ -42,5 +42,5 @@ runiso: iso
 	@make run
 
 clean:
-	rm $(ASM) $(KERNEL) Qemu.log swan-os.iso Cargo.lock
-	rm -rf isodir target .vscode
+	-rm $(ASM) Qemu.log swan-os.iso Cargo.lock
+	-rm -rf isodir target

@@ -50,8 +50,8 @@ impl SerialPort {
         true
     }
 
-    unsafe fn is_transmit_empty(&mut self) -> u8 {
-        return inb(self.port + 5) & 0x20;
+    unsafe fn is_transmit_empty(&self) -> u8 {
+        inb(self.port + 5) & 0x20
     }
 
     pub fn send_byte(&mut self, c: u8) {

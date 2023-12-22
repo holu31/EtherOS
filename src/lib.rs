@@ -73,5 +73,7 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     
     memory::init(mboot);
 
-    arch::hlt()
+    arch::hlt();
+    
+    loop {}
 }

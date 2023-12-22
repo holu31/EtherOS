@@ -56,8 +56,6 @@ impl<'a> MemoryMap<'a> {
         let pages_count = max_memory / 4096;
         let bitmap = slice::from_raw_parts_mut(_kernel_end as *mut u32, pages_count / 8);
 
-        // log!("Bitmap at: {:?}", bitmap);
-
         unsafe {
             bitmap.fill(0xFFFF_FFFF)
         };

@@ -15,7 +15,7 @@ setup:
 	@rustup target add x86_64-unknown-none
 
 $(KERNEL): Cargo.toml src/*.rs $(ASM)
-	@cargo rustc --release --target targets/$(TARGET).json
+	@cargo rustc --release
 
 	$(LD) -n $(RUST) $(ASM) \
 		-T src/link.ld \

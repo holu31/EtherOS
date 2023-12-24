@@ -82,7 +82,7 @@ impl<'a> MemoryMap<'a> {
     }
 
     pub fn alloc_page(&mut self) -> *mut u8 {
-        for i in 0..self.pages_count {
+        for i in 1..self.pages_count {
             let idx = i / 32;
             let bit = i % 32;
 

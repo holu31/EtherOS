@@ -9,6 +9,7 @@ pub mod logger;
 pub mod sys;
 pub mod framebuffer;
 pub mod memory;
+pub mod drv;
 
 #[cfg(target_arch = "x86")]
 #[path="arch/i686/mod.rs"]
@@ -21,6 +22,8 @@ use arch::interrupts::interrupts_init;
 use arch::pic::PICS;
 use sys::syscalls::syscalls_init;
 use raw_cpuid::CpuId;
+
+use crate::drv::pci::list_pci_devices;
 
 extern {
     pub static _kernel_start: usize;
@@ -66,6 +69,7 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     interrupts_init();
     PICS.lock().init();
     syscalls_init();
+    list_pci_devices();
 
     log!("Test printable syscall");
     asm!("int $0x80", in("eax") (0), in("ebx") (12));

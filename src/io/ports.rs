@@ -44,7 +44,7 @@ pub unsafe fn outl(port: u16, value: u32) {
 pub unsafe fn inl(port: u16) -> u32 {
     let mut tmp: u32;
     unsafe {
-        asm!("in dx, eax", in("dx") port, out("eax") tmp, options(nomem, nostack, preserves_flags));
+        asm!("in eax, dx", in("dx") port, out("eax") tmp, options(nomem, nostack, preserves_flags)); 
     }
     tmp
 }

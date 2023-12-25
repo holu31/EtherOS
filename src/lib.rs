@@ -23,6 +23,7 @@ use arch::pic::PICS;
 use sys::syscalls::syscalls_init;
 use raw_cpuid::CpuId;
 
+use crate::drv::cmos::RealTimeClock;
 use crate::drv::pci::list_pci_devices;
 
 extern {
@@ -70,6 +71,10 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     PICS.lock().init();
     syscalls_init();
     list_pci_devices();
+    let mut cmos = RealTimeClock::new();
+    cmos.read_rtc();
+    note!("Текущая дата: {}.{}.{}", cmos.day, cmos.month, cmos.year);
+    note!("Скоро новый год!");
 
     log!("Test printable syscall");
     asm!("int $0x80", in("eax") (0), in("ebx") (12));

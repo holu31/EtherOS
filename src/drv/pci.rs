@@ -42,7 +42,7 @@ pub fn list_pci_devices() {
             let vendor = unsafe { pci.pci_get_vendor() };
             
             if vendor != 0xFFFF {
-                log!("Найдено PCI устройство с Vendor ID = {}", vendor);
+                log!("{}:{} Найдено PCI устройство с Vendor ID = {}", bus, slot, vendor);
             }
         }
     }

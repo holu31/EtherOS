@@ -74,7 +74,10 @@ pub unsafe extern "C" fn kernel_main(multiboot_addr: u32, _stack_top: u32) -> ! 
     let mut cmos = RealTimeClock::new();
     cmos.read_rtc();
     note!("Текущая дата: {}.{}.{}", cmos.day, cmos.month, cmos.year);
-    note!("Скоро новый год!");
+    if cmos.month == 12 {
+        note!("Скоро новый год!");
+        note!("До нового года {} дня, {} часов", 31-cmos.day, 24-(cmos.hour+4));
+    }
 
     log!("Test printable syscall");
     asm!("int $0x80", in("eax") (0), in("ebx") (12));
